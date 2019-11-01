@@ -1,16 +1,12 @@
 #!/bin/sh
 #$ -q all.q
-##$ -q INFORMATICS
-##$ -q UI
 #$ -N MYJOBNAME
-##$ -pe smp 28
-##$ -l 400G=true
 #$ -pe 56cpn 56
 #$ -l mt=400G
 #$ -o CURRENTDIRECTORY
 #$ -e CURRENTDIRECTORY
 
-pyname=comsol
+command=comsol
 cd CURRENTDIRECTORY
 
 # define all the file names
@@ -19,40 +15,46 @@ recordname=fb-comsol-${num}.txt
 logname=log-comsol-${num}.txt
 
 # register the job
+touch job.begin
 echo "+++++++++++++++++++++++++++++" >> job.info
 date >> job.info
-echo $JOB_ID  $JOB_NAME $pyname ${recordname} >> job.info
-
-# global register
-~/bin/write-to-runningfile.py $JOB_ID $JOB_NAME $pyname ${recordname}
-~/bin/write-to-summary.py $JOB_ID $JOB_NAME $pyname ${recordname} "begin"
-
+echo $JOB_ID  $JOB_NAME $command ${recordname} >> job.info
 
 # job begin
-echo $JOB_ID $JOB_NAME $pyname ${recordname} > ${recordname}
+echo $JOB_ID $JOB_NAME $command ${recordname} > ${recordname}
 date >> ${recordname}
 echo "hello" >> ${recordname}
 echo "===============================" >> ${recordname}
-COMSOLCOMSOL -nn 3 -np 28 batch -inputfile ${mphfile} -outputfile ${donefile} -batchlog ${logname} >> ${recordname}
 
+echo "+++++++++++++++++++++++++++++++" >> ${recordname}
+date >> ${recordname}
+if [ -f MPHNAME_Log.txt ]; then
+  echo "MPHNAME_Done.mph exist"  >>${recordname}
+else
+  echo "MPHNAME_Done.mph to run"  >>${recordname}
+  comsol -nn 1 -np 28 batch  \
+      -inputfile MPHNAME.mph  \
+      -outputfile MPHNAME_Done.mph \
+      -batchlog MPHNAME_Log_${num}.txt  >>${recordname}
+  rm -v MPHNAME_Done.mph.status >>${recordname}
+  rm -v MPHNAME_w68nm_Done.mph.recovery >>${recordname}
+  mv -v MPHNAME_Log_${num}.txt MPHNAME_Log.txt
+fi
+date >> ${recordname}
+echo "--------------------------------" >> ${recordname}
+
+echo "===============================" >> ${recordname}
 echo "bye" >> ${recordname}
-
-# unregister job globally
-~/bin/write-to-summary.py $JOB_ID $JOB_NAME $pyname ${recordname} "stop"
-~/bin/write-to-finish.py $JOB_ID $JOB_NAME $pyname ${recordname}
-
-
 
 #  cleanup /tmp (if necessary)
 #
 
 #  leave a hint in the working dierctory
 #  that the job has comleted
-#
 touch job.done
 echo "-----------------------------" >> job.done
 date >> job.done
-echo $JOB_ID  $JOB_NAME $pyname ${recordname} >> job.done
+echo $JOB_ID  $JOB_NAME $command ${recordname} >> job.done
 echo "-----------------------------" >> job.info
 date >> job.info
-echo $JOB_ID  $JOB_NAME $pyname ${recordname} >> job.info
+echo $JOB_ID  $JOB_NAME $command ${recordname} >> job.info
