@@ -4,13 +4,22 @@ Create a job file for Comsol simulations
 """
 
 import os,glob,sys,shutil,subprocess
-import re
+import re,random
 import logging
 
 def analyze_mph_files(idx):
-    """ Analyze the *.mph files and *_Done.mph files in the current folder.
+    """Analyze the *.mph files and *_Done.mph files in the current
+    folder. The function returns a string based on idx.
+
+      idx=0: return the summary of the folder
+    
+      idx>0: return a mph name chosen from the head of the to-do list
+
+      idx<0: return a mph name chosen form the tail of the to-do list
+
     """
     mphfiles=glob.glob("*mph")
+    logfile=glob.glob("*Log.txt")
     mphfiles.sort()
     todofiles=[]
     nt=0 # total simulaitons
@@ -18,14 +27,45 @@ def analyze_mph_files(idx):
     nb=0 # bad simulations
 
     for mph in mphfiles:
-        if  re.search("_Done.mph",mph)):
+        if not re.search("mph$",mph):
+            continue
+
+        if  re.search("_Done.mph",mph):
             # end with Done
             mph2=re.sub("_Done","",mph)
             if mph2 in mphfiles:
-                nd+=1
+                pass
             else:
                 nb+=1
-                
+        else: 
+            # not end with Done
+            nt+=1
+            mph2=re.sub("\.mph","_Done.mph",mph)
+            log=re.sub("\.mph","_Log.txt",mph)
+            if mph2 in mphfiles and log  in logfiles:
+                nd+=1
+            else:
+                mph3=re.sub("\.mph$","",mph)
+                todofiles.append(mph3)
+    
+    # retrun a string
+    m=len(todofiles)
+    if idx==0:
+        return "{} simulaitons; {} finished; {} werid".format(nt,nd,nb);
+    elif m==0:  # todofiles is empety
+        return ""
+    elif idx>1:  # random pick from the head
+        n=min(idx,m)
+        return random.choice(todofiles[0:n])
+    else:   # random pick from the tail
+        n=min(-idx,m)
+        return random.choice(todofiles[m+idx:m])
+
+def main(argv):
+    logging.basicConfig(level=logging.DEBUG,
+                        format='%(levelname)s: %(message)s')
+    ss=analyze_mph_files(-1)
+    logging.debug(ss)
 
 # def main(argv):
 #     shutil.copy2('/Users/wdai11/bin/dwt-comsol-job-file.job','./dwt-comsol.job')
@@ -108,5 +148,5 @@ def analyze_mph_files(idx):
 #########################
 # main function
 if __name__=='__main__':
-    os.system('cls' if os.name == 'nt' else 'clear')
+    # os.system('cls' if os.name == 'nt' else 'clear')
     main(sys.argv)
