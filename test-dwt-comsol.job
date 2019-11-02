@@ -1,0 +1,35 @@
+#!/bin/sh
+
+command=comsol
+
+# define all the file names
+JOB_ID=001
+JOB_NAME=dwt-comsol
+num=001
+recordname=fb-comsol-${num}.txt
+logname=log-comsol-${num}.txt
+
+# register the job
+echo "+++++++++++++++++++++++++++++++" >> ${recordname}
+date >> ${recordname}
+# MPHNAME="$(./mkjob_comsol.py 2>&1 >/dev/null)"
+MPHNAME="$(./mkjob_comsol.py)"
+echo $MPHNAME
+if [ -z "$MPHNAME" ]
+then
+  echo "All jobs are done"  >>${recordname}
+else
+  DONEFILE=${MPHNAME}_Done.mph
+  LOGFILE=${MPHNAME}_Log.txt
+  MPHFILE=${MPHNAME}.mph
+  echo "${DONEFILE} to run"  >>${recordname}
+  touch $DONEFILE
+  touch $LOGFILE
+fi
+date >> ${recordname}
+echo "--------------------------------" >> ${recordname}
+
+#  cleanup /tmp (if necessary)
+#
+
+

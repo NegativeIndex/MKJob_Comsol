@@ -8,18 +8,21 @@ import re,random
 import logging
 
 def analyze_mph_files(idx):
-    """Analyze the *.mph files and *_Done.mph files in the current
+    """Analyze the \*.mph files and \*_Done.mph files in the current
     folder. The function returns a string based on idx.
-
-      idx=0: return the summary of the folder
     
-      idx>0: return a mph name chosen from the head of the to-do list
+      * idx=0: return the summary of the folder
+   
+      * idx>0: return a mph name chosen from the head of the to-do
+        list. The mph name is a string without mph extension. The
+        returned name is a random pick from the first idx unfinished
+        names.
 
-      idx<0: return a mph name chosen form the tail of the to-do list
+      * idx<0: return a mph name chosen form the tail of the to-do list.
 
     """
     mphfiles=glob.glob("*mph")
-    logfile=glob.glob("*Log.txt")
+    logfiles=glob.glob("*Log.txt")
     mphfiles.sort()
     todofiles=[]
     nt=0 # total simulaitons
@@ -41,6 +44,7 @@ def analyze_mph_files(idx):
             # not end with Done
             nt+=1
             mph2=re.sub("\.mph","_Done.mph",mph)
+            logging.debug(mph2)
             log=re.sub("\.mph","_Log.txt",mph)
             if mph2 in mphfiles and log  in logfiles:
                 nd+=1
@@ -49,6 +53,7 @@ def analyze_mph_files(idx):
                 todofiles.append(mph3)
     
     # retrun a string
+    
     m=len(todofiles)
     if idx==0:
         return "{} simulaitons; {} finished; {} werid".format(nt,nd,nb);
@@ -65,7 +70,8 @@ def main(argv):
     logging.basicConfig(level=logging.DEBUG,
                         format='%(levelname)s: %(message)s')
     ss=analyze_mph_files(-1)
-    logging.debug(ss)
+    # logging.debug(ss)
+    return ss
 
 # def main(argv):
 #     shutil.copy2('/Users/wdai11/bin/dwt-comsol-job-file.job','./dwt-comsol.job')
@@ -149,4 +155,6 @@ def main(argv):
 # main function
 if __name__=='__main__':
     # os.system('cls' if os.name == 'nt' else 'clear')
-    main(sys.argv)
+    ss=main(sys.argv)
+    # sys.exit(ss)
+    print(ss)

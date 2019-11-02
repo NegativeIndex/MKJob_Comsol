@@ -5,7 +5,7 @@ Welcome to MKJob_Comsol's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-mkjob-comsol module
+MKJob_Comsol module
 ----------------------------------------------------------------
 .. automodule:: MKJob_Comsol.mkjob_comsol
       :members:
