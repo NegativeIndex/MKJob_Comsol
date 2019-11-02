@@ -10,25 +10,30 @@ recordname=fb-comsol-${num}.txt
 logname=log-comsol-${num}.txt
 
 # register the job
-echo "+++++++++++++++++++++++++++++++" >> ${recordname}
-date >> ${recordname}
-# MPHNAME="$(./mkjob_comsol.py 2>&1 >/dev/null)"
 MPHNAME="$(./mkjob_comsol.py)"
-echo $MPHNAME
-if [ -z "$MPHNAME" ]
-then
-  echo "All jobs are done"  >>${recordname}
-else
-  DONEFILE=${MPHNAME}_Done.mph
-  LOGFILE=${MPHNAME}_Log.txt
-  MPHFILE=${MPHNAME}.mph
-  echo "${DONEFILE} to run"  >>${recordname}
-  touch $DONEFILE
-  touch $LOGFILE
-fi
-date >> ${recordname}
-echo "--------------------------------" >> ${recordname}
+COUNTER=0
+while [ ! -z "$MPHNAME" ]
+do
+    echo "+++++++++++++++++++++++++++++++" >> ${recordname}
+    date >> ${recordname}
 
+    donefile=${MPHNAME}_Done.mph
+    logfile=${MPHNAME}_Log.txt
+    mphfile=${MPHNAME}.mph
+    echo "${MPHNAME} to run"  >>${recordname}
+    touch $donefile
+    touch $logfile
+
+    date >> ${recordname}
+    echo "--------------------------------" >> ${recordname}
+    MPHNAME="$(./mkjob_comsol.py)"
+
+    # a circuit breaker to provent infinite loop
+    let COUNTER=COUNTER+1 
+    if [  $COUNTER -gt 1000 ]; then
+	break
+    fi
+done
 #  cleanup /tmp (if necessary)
 #
 
