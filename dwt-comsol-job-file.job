@@ -1,12 +1,14 @@
 #!/bin/sh
-#$ -q all.q
 #$ -N job-comsol
+#$ -cwd
+#$ -q all.q
 #$ -pe 56cpn 56
 #$ -l mt=200G
-#$ -cwd
 
 command=comsol
-
+mkjob=mkjob-comsol
+ncore=28
+pick=1
 
 # define all the file names
 num=${JOB_ID%%.*}
@@ -26,7 +28,7 @@ echo "hello" >> ${recordname}
 echo "===============================" >> ${recordname}
 
 # begin the main while loop
-MPHNAME="$(./mkjob_comsol.py -a -i 1)"
+MPHNAME="$($mkjob -a -p $pick)"
 COUNTER=0
 while [ ! -z "$MPHNAME" ];
 do
@@ -39,7 +41,7 @@ do
     mphfile=${MPHNAME}.mph
 
     echo "$MPHNAME to run"  >>${recordname}
-    comsol -nn 1 -np 28 batch  \
+    comsol -nn 1 -np $ncore batch  \
 	-inputfile $mphfile  \
 	-outputfile $donefile \
 	-batchlog $logtempfile  >>${recordname}
@@ -48,10 +50,10 @@ do
     cp -v $logtempfile $logfile >>${recordname}
 
     date >> ${recordname}
-    echo "$(./mkjob_comsol.py -a -i 0)" >>${recordname}
+    echo "$($mkjob -a -p 0)" >>${recordname}
     echo "--------------------------------" >> ${recordname}
 
-    MPHNAME="$(./mkjob_comsol.py -a -i 1)"
+    MPHNAME="$($mkjob -a -p $pick)"
     # a circuit breaker to provent infinite loop
     let COUNTER=COUNTER+1 
     if [  $COUNTER -gt 1000 ]; then
