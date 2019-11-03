@@ -45,7 +45,7 @@ def analyze_mph_files(idx):
             # not end with Done
             nt+=1
             mph2=re.sub("\.mph","_Done.mph",mph)
-            logging.debug(mph2)
+            # logging.debug(mph2)
             log=re.sub("\.mph","_Log.txt",mph)
             if mph2 in mphfiles and log  in logfiles:
                 nd+=1
@@ -60,7 +60,7 @@ def analyze_mph_files(idx):
         return "{} simulaitons; {} finished; {} werid".format(nt,nd,nb);
     elif m==0:  # todofiles is empety
         return ""
-    elif idx>1:  # random pick from the head
+    elif idx>0:  # random pick from the head
         n=min(idx,m)
         return random.choice(todofiles[0:n])
     else:   # random pick from the tail
