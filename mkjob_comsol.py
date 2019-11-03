@@ -75,7 +75,7 @@ def generate_job_file(args):
     job file: cpu, memory, queue and pick (analyze_mph_files parameter).
 
     """
-    rfolder='/Users/wdai11/python-study/MKJob_Comsol'
+    rfolder=os.path.dirname(os.path.realpath(__file__))
     jobname='./dwt-comsol.job'
     shutil.copy2(os.path.join(rfolder,'dwt-comsol-job-file.job'),
                  jobname)
