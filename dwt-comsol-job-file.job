@@ -26,22 +26,39 @@ date >> ${recordname}
 echo "hello" >> ${recordname}
 echo "===============================" >> ${recordname}
 
-echo "+++++++++++++++++++++++++++++++" >> ${recordname}
-date >> ${recordname}
-if [ -f MPHNAME_Log.txt ]; then
-  echo "MPHNAME_Done.mph exist"  >>${recordname}
-else
-  echo "MPHNAME_Done.mph to run"  >>${recordname}
-  comsol -nn 1 -np 28 batch  \
-      -inputfile MPHNAME.mph  \
-      -outputfile MPHNAME_Done.mph \
-      -batchlog MPHNAME_Log_${num}.txt  >>${recordname}
-  rm -v MPHNAME_Done.mph.status >>${recordname}
-  rm -v MPHNAME_w68nm_Done.mph.recovery >>${recordname}
-  mv -v MPHNAME_Log_${num}.txt MPHNAME_Log.txt
-fi
-date >> ${recordname}
-echo "--------------------------------" >> ${recordname}
+# begin the main while loop
+MPHNAME="$(./mkjob_comsol.py -a -idx 1)"
+COUNTER=0
+while [ ! -z "$MPHNAME" ];
+do
+    echo "+++++++++++++++++++++++++++++++" >> ${recordname}
+    date >> ${recordname}
+
+    donefile=${MPHNAME}_Done.mph
+    logfile=${MPHNAME}_Log.txt
+    logtempfile=${MPHNAME}_Log_${num}.txt
+    mphfile=${MPHNAME}.mph
+
+    echo "$MPHNAME to run"  >>${recordname}
+    comsol -nn 1 -np 28 batch  \
+	-inputfile $mphfile  \
+	-outputfile $donefile \
+	-batchlog $logtempfile  >>${recordname}
+    rm -v ${MPHNAME}_Done.mph.status >>${recordname}
+    rm -v ${MPHNAME}_Done.mph.recovery >>${recordname}
+    cp -v $logtempfile $logfile
+
+    date >> ${recordname}
+    echo "$(./mkjob_comsol.py -a -idx 0)"
+    echo "--------------------------------" >> ${recordname}
+
+    MPHNAME="$(./mkjob_comsol.py -a -idx 1)"
+    # a circuit breaker to provent infinite loop
+    let COUNTER=COUNTER+1 
+    if [  $COUNTER -gt 1000 ]; then
+	break
+    fi
+done
 
 echo "===============================" >> ${recordname}
 echo "bye" >> ${recordname}

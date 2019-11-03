@@ -5,11 +5,12 @@ Create a job file for Comsol simulations
 
 import os,glob,sys,shutil,subprocess
 import re,random
-import logging
+import logging,argparse
 
 def analyze_mph_files(idx):
     """Analyze the \*.mph files and \*_Done.mph files in the current
-    folder. The function returns a string based on idx.
+    folder. Generate a to-do list for the next simulation. The
+    function returns a string based on idx.
     
       * idx=0: return the summary of the folder
    
@@ -66,12 +67,67 @@ def analyze_mph_files(idx):
         n=min(-idx,m)
         return random.choice(todofiles[m+idx:m])
 
+#####
+def generate_job_file():
+    """ Generate the job file
+
+    """
+    rfolder='/Users/wdai11/python-study/MKJob_Comsol'
+    shutil.copy2(os.path.join(rfolder,'dwt-comsol-job-file.job'),
+                 './dwt-comsol.job')
+    print('copy dwt-comsol.job')
+    with open('dwt-comsol.job', 'r') as f:
+        jobfile=f.readlines()
+
+
+
+    return ""
+
+######
 def main(argv):
+    """usage: mkjob_comsol.py [-h] [-a] [-i IDX] 
+
+    The system arguments will be simply passed to the main
+    function. The main function can generate a job file or analyze the
+    folder with the mph files based on the argument.
+
+    optional arguments:
+
+      -h, --help         show this help message and exit
+
+      -a, --analyze      Analyze the folder instead generate the job file
+
+      -i IDX, --idx IDX  Kill all the jobs with a status
+
+    """
     logging.basicConfig(level=logging.DEBUG,
                         format='%(levelname)s: %(message)s')
-    ss=analyze_mph_files(-1)
-    # logging.debug(ss)
+
+    # parse args
+    ss="Generate a job file and analyze mph files"
+    parser = argparse.ArgumentParser(description=ss)
+    parser.add_argument('-a', '--analyze', 
+                        action='store_true',default=False,
+                        help="Analyze the folder instead generate the job file")
+
+    parser.add_argument('-i', '--idx', action="store", 
+                        type=int,default=0,
+                        help="Kill all the jobs with a status")
+    argv.pop(0)
+    # logging.debug(argv)
+    args = parser.parse_args(argv)
+    # logging.debug(args)
+    
+    if args.analyze:
+        # analyze the folder, return the next simulation name
+        ss=analyze_mph_files(args.idx)
+    else:
+        # generate job file
+        ss=generate_job_file()
     return ss
+
+
+
 
 # def main(argv):
 #     shutil.copy2('/Users/wdai11/bin/dwt-comsol-job-file.job','./dwt-comsol.job')
@@ -154,7 +210,10 @@ def main(argv):
 #########################
 # main function
 if __name__=='__main__':
+    # clear screen
     # os.system('cls' if os.name == 'nt' else 'clear')
-    ss=main(sys.argv)
+    args=sys.argv
+    # args.pop()
+    ss=main(args)
     # sys.exit(ss)
     print(ss)
