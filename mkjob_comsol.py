@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Create a job file for Comsol simulations
+Create a job file for Comsol simulations.
 """
 
 import os,glob,sys,shutil,subprocess
@@ -12,12 +12,12 @@ def analyze_mph_files(pick):
     folder. Generate a to-do list for the next simulation. The
     function returns a string based on pick.
     
-      * pick=0: return the summary of the folder
+      * pick=0: return the summary of the folder.
    
       * pick>0: return a mph name chosen from the head of the to-do
         list. The mph name is a string without mph extension. The
         returned name is a random pick from the first pick unfinished
-        names.
+        names. pick=1 means to choose the first one.
 
       * pick<0: return a mph name chosen form the tail of the to-do list.
 
