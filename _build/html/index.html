@@ -1,0 +1,166 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Welcome to MKJob_Comsol’s documentation! &#8212; MKJob_Comsol 11/01/2019 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">MKJob_Comsol 11/01/2019 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="welcome-to-mkjob-comsol-s-documentation">
+<h1>Welcome to MKJob_Comsol’s documentation!<a class="headerlink" href="#welcome-to-mkjob-comsol-s-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<div class="section" id="module-MKJob_Comsol.mkjob_comsol">
+<span id="mkjob-comsol-module"></span><h2>MKJob_Comsol module<a class="headerlink" href="#module-MKJob_Comsol.mkjob_comsol" title="Permalink to this headline">¶</a></h2>
+<p>Create a job file for Comsol simulations</p>
+<dl class="function">
+<dt id="MKJob_Comsol.mkjob_comsol.analyze_mph_files">
+<code class="sig-prename descclassname">MKJob_Comsol.mkjob_comsol.</code><code class="sig-name descname">analyze_mph_files</code><span class="sig-paren">(</span><em class="sig-param">pick</em><span class="sig-paren">)</span><a class="headerlink" href="#MKJob_Comsol.mkjob_comsol.analyze_mph_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Analyze the *.mph files and *_Done.mph files in the current
+folder. Generate a to-do list for the next simulation. The
+function returns a string based on pick.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>pick=0: return the summary of the folder</p></li>
+<li><p>pick&gt;0: return a mph name chosen from the head of the to-do
+list. The mph name is a string without mph extension. The
+returned name is a random pick from the first pick unfinished
+names.</p></li>
+<li><p>pick&lt;0: return a mph name chosen form the tail of the to-do list.</p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="MKJob_Comsol.mkjob_comsol.generate_job_file">
+<code class="sig-prename descclassname">MKJob_Comsol.mkjob_comsol.</code><code class="sig-name descname">generate_job_file</code><span class="sig-paren">(</span><em class="sig-param">args</em><span class="sig-paren">)</span><a class="headerlink" href="#MKJob_Comsol.mkjob_comsol.generate_job_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate the job file. We have to supply several parameters to the
+job file: cpu, memory, queue and pick (analyze_mph_files parameter).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MKJob_Comsol.mkjob_comsol.main">
+<code class="sig-prename descclassname">MKJob_Comsol.mkjob_comsol.</code><code class="sig-name descname">main</code><span class="sig-paren">(</span><em class="sig-param">argv</em><span class="sig-paren">)</span><a class="headerlink" href="#MKJob_Comsol.mkjob_comsol.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>usage: mkjob_comsol.py [-h] [-a] [-i IDX]</p>
+<p>The system arguments will be simply passed to the main
+function. The main function can generate a job file or analyze the
+folder with the mph files based on the argument.</p>
+<p>optional arguments:</p>
+<blockquote>
+<div><dl class="option-list">
+<dt><kbd><span class="option">-h</span>, <span class="option">--help</span></kbd></dt>
+<dd><p>show this help message and exit</p>
+</dd>
+<dt><kbd><span class="option">-a</span>, <span class="option">--analyze</span></kbd></dt>
+<dd><p>Analyze the folder instead generate the job file</p>
+</dd>
+<dt><kbd><span class="option">-p <var>PICK</var></span>, <span class="option">--pick <var>PICK</var></span></kbd></dt>
+<dd><p>How to pick the next simulaiton</p>
+</dd>
+<dt><kbd><span class="option">-q <var>QUEUE</var></span>, <span class="option">--queue <var>QUEUE</var></span></kbd></dt>
+<dd><p>Define a queue: (all.q|UI|INFORMATICS)</p>
+</dd>
+<dt><kbd><span class="option">-c <var>CORE</var></span>, <span class="option">--core <var>CORE</var></span></kbd></dt>
+<dd><p>Number of cores</p>
+</dd>
+<dt><kbd><span class="option">-m <var>MEMORY</var></span>, <span class="option">--memory <var>MEMORY</var></span></kbd></dt>
+<dd><p>Minimum of memory of the node</p>
+</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Welcome to MKJob_Comsol’s documentation!</a><ul>
+<li><a class="reference internal" href="#module-MKJob_Comsol.mkjob_comsol">MKJob_Comsol module</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">MKJob_Comsol 11/01/2019 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Weitao Dai.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>
