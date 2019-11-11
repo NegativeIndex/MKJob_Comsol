@@ -26,6 +26,7 @@ echo $JOB_ID $JOB_NAME $command ${recordname} > ${recordname}
 date >> ${recordname}
 echo "hello" >> ${recordname}
 echo "===============================" >> ${recordname}
+echo "$($mkjob -a -p 0)" >>${recordname}
 
 # begin the main while loop
 MPHNAME="$($mkjob -a -p $pick)"
@@ -54,7 +55,7 @@ do
     echo "--------------------------------" >> ${recordname}
 
     MPHNAME="$($mkjob -a -p $pick)"
-    # a circuit breaker to provent infinite loop
+    # a circuit breaker to prevent infinite loop
     let COUNTER=COUNTER+1 
     if [  $COUNTER -gt 1000 ]; then
 	break
